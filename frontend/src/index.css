@@ -1,6 +1,10 @@
-@import "tailwindcss";
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
 
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* then your custom styles */
 @theme inline {
     --font-serif: "Instrument Serif", Georgia, serif;
     --font-sans: "Inter", system-ui, sans-serif;

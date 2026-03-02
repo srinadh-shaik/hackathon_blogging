@@ -3,12 +3,6 @@
 import React, { useState } from 'react';
 import { Menu, ArrowRight, Terminal, Database, FileText, Globe, Users } from 'lucide-react';
 
-interface NavLink {
-    label: string;
-    href: string;
-    isActive?: boolean;
-}
-
 interface ResponsiveHeroBannerProps {
     onGetStarted?: () => void;
 }
