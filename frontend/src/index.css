@@ -1,10 +1,12 @@
+/* 1. Web fonts MUST be at the very top */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* 2. Tailwind import comes second */
+@import "tailwindcss";
 
-/* then your custom styles */
+/* 3. Force Tailwind to scan the Vercel folders */
+@source "../";
+
 @theme inline {
     --font-serif: "Instrument Serif", Georgia, serif;
     --font-sans: "Inter", system-ui, sans-serif;
@@ -49,7 +51,6 @@
     }
 }
 
-/* Custom Scrollbar for a premium feel */
 ::-webkit-scrollbar {
     width: 8px;
 }
