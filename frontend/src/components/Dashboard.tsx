@@ -58,13 +58,23 @@ export default function Dashboard({ user, project, onLogout }: { user: User, pro
 
   const handlePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/posts`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ title, content, researchLink, isPublic, postType, authorId: user.id, projectId: project.id }),
-    });
-    setTitle(''); setContent(''); setResearchLink(''); setIsPublic(false);
-    setActiveTab(postType === 'WORK_DONE' ? 'TEAM_WORK' : 'TEAM_GENERAL');
+    try {
+      await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/posts`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title, content, researchLink, isPublic, postType, authorId: user.id, projectId: project.id }),
+      });
+      
+      setTitle(''); setContent(''); setResearchLink(''); setIsPublic(false);
+      setActiveTab(postType === 'WORK_DONE' ? 'TEAM_WORK' : 'TEAM_GENERAL');
+
+      // Foolproof fallback: Force the app to fetch the latest data immediately 
+      fetchData(); 
+
+    } catch (error) {
+      console.error("Failed to publish post:", error);
+      alert("Error publishing post. Check your connection!");
+    }
   };
 
   const researchLinks = posts.filter(p => p.researchLink && p.projectId === project.id);
