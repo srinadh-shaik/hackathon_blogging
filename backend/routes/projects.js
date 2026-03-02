@@ -1,30 +1,44 @@
 const express = require('express');
 const router = express.Router();
-const crypto = require('crypto');
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
+const crypto = require('crypto');
 
+// Create a new team
 router.post('/create', async (req, res) => {
   const { projectName, userId } = req.body;
-  const uniqueCode = crypto.randomUUID().slice(0, 8).toUpperCase(); 
-  
   try {
+    // Generate a secure 6-character invite code (e.g., "A7F9B2")
+    const inviteCode = crypto.randomBytes(3).toString('hex').toUpperCase();
+    
     const project = await prisma.project.create({
-      data: { name: projectName, inviteCode: uniqueCode, members: { connect: { id: userId } } }
+      data: {
+        name: projectName,
+        inviteCode: inviteCode,
+        users: { connect: { id: parseInt(userId) } }
+      }
     });
     res.json(project);
-  } catch (e) { res.status(500).json({ error: "Could not create team" }); }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to create workspace" });
+  }
 });
 
+// Join an existing team
 router.post('/join', async (req, res) => {
   const { inviteCode, userId } = req.body;
   try {
     const project = await prisma.project.update({
-      where: { inviteCode: inviteCode.toUpperCase() },
-      data: { members: { connect: { id: userId } } }
+      where: { inviteCode: inviteCode },
+      data: {
+        users: { connect: { id: parseInt(userId) } }
+      }
     });
     res.json(project);
-  } catch (e) { res.status(404).json({ error: "Invalid Invite Code" }); }
+  } catch (error) {
+    res.status(400).json({ error: "Invalid Access Token" });
+  }
 });
 
 module.exports = router;
